@@ -42,7 +42,7 @@ const MainDashboard = () => {
     <Box padding="20px" bg="gray.50" minHeight="100vh">
       <Heading  style={{marginTop:100}} as="h2" size="lg" mb={6} textAlign="center">Dashboard Utama</Heading>
       <Text fontSize="lg" mb={8} textAlign="center" className="animate-slide-in">
-  Selamat datng, {userData ? userData.username : 'Pengguna'}!
+  Selamat datang, {userData ? userData.username : 'Pengguna'}!
 </Text>
 
   
