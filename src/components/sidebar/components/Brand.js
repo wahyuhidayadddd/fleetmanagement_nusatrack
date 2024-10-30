@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 // Chakra imports
 import { Flex, Text, useColorModeValue } from "@chakra-ui/react";
@@ -8,24 +8,47 @@ import { HSeparator } from "components/separator/Separator";
 
 export function SidebarBrand() {
   // Chakra color mode
-  let logoColor = useColorModeValue("navy.700", "white");
+  const logoColor = useColorModeValue("navy.700", "white");
+  const [userData, setUserData] = useState(null);
+
+  // Function to fetch user data
+  const fetchUserData = async () => {
+    const token = localStorage.getItem("token"); 
+    const response = await fetch("http://localhost:5000/api/lihatdata", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setUserData(data.user); 
+    } else {
+      console.error("Failed to fetch user data");
+    }
+  };
+
+  // Fetch user data when component mounts
+  useEffect(() => {
+    fetchUserData();
+  }, []);
 
   return (
-    <Flex align='center' direction='column'>
-      <Flex align='center' direction='row'>
-
-        {/* Cool and stylish text */}
+    <Flex align="center" direction="column">
+      <Flex align="center" direction="row">
         <Text
-          fontSize="2xl"       // Larger font size for logo
-          fontWeight="bold"     // Bold for emphasis
-          letterSpacing="wider" // Letter spacing to make it look more stylish
-          color={logoColor}     // Dynamic color based on mode (light or dark)
-          fontFamily="Poppins, sans-serif" // Use a cool font like Poppins or any custom font
+          fontSize="2xl" 
+          fontWeight="bold" 
+          letterSpacing="wider"
+          color={logoColor} 
+          fontFamily="Poppins, sans-serif" 
         >
-        NUSA TECHNO
+          {userData ? ` ${userData.company_name}` : "Loading..."}
         </Text>
       </Flex>
-      <HSeparator mb='20px' />
+      <HSeparator mb="20px" />
     </Flex>
   );
 }

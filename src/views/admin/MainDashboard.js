@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Heading, Text, SimpleGrid, Card, CardBody, Stack, Button, Icon } from '@chakra-ui/react';
-import './styles.css'; // Pastikan path-nya sesuai dengan struktur proyekmu
+import './styles.css'; 
 
 
 const MainDashboard = () => {
