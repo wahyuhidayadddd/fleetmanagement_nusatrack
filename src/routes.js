@@ -5,7 +5,8 @@ import {
   MdPhotoCamera,    
   MdWarning,
   MdPeople,
-  MdDashboard,  // Ikon untuk dashboard
+  MdDashboard,
+  MdAccountBox,  
 } from 'react-icons/md';
 
 import GPSTrackingComponent from 'views/admin/gps';
@@ -13,6 +14,7 @@ import CameraTrackingComponent from 'views/admin/camera';
 import DamageDetectionComponent from 'views/admin/damage';
 import DriverDashboard from 'views/admin/DriverDashboard'; 
 import MainDashboard from 'views/admin/MainDashboard';  
+import AkunUser from 'views/admin/akunuser';  
 
 const trackingRoutes = [
   {
@@ -50,6 +52,15 @@ const trackingRoutes = [
     icon: <Icon as={MdPeople} width="20px" height="20px" color="inherit" />,
     component: <DriverDashboard />, 
   },
+  {
+    name: 'Akun Costumer',
+    layout: '/admin', 
+    path: '/akunuser', 
+    icon: <Icon as={MdAccountBox} width="20px" height="20px" color="inherit" />, // Misalnya, mengganti dengan MdAccountBox
+    component: <AkunUser />, 
+},
+
+
 ];
 
 export default trackingRoutes;

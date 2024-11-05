@@ -22,6 +22,9 @@ import {
   Input,
   VStack,
   Box,
+  Select,
+  Heading,
+  Stack,
 } from '@chakra-ui/react';
 
 
@@ -32,6 +35,7 @@ import Swal from 'sweetalert2';
 
 import routes from 'routes';
 import { ChevronDownIcon } from '@chakra-ui/icons';
+import axios from 'axios';
 
 export default function HeaderLinks(props) {
   const { secondary } = props;
@@ -58,43 +62,66 @@ export default function HeaderLinks(props) {
       const name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
       document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
     });
-    window.location.href = '/login';
+    window.location.href = '/';
   };
   const [userData, setUserData] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newUser, setNewUser] = useState({ username: '', password: '', selected_features: [] });
   const [features, setFeatures] = useState([]);
-
-  const lihatDataUser = async () => {
-    const token = localStorage.getItem('token');
-    const response = await fetch("http://localhost:5000/api/lihatdata", {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data) {
-      
-        if (data.user) {
-          setUserData(data.user);
-        }
-        
-        if (data.features) {
-          setFeatures(data.features);
-        }
-      }
-    }
-  };
-
+  const [devices, setDevices] = useState([])
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      lihatDataUser();
-    }
+    const fetchData = async () => {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      try {
+       
+        const devicesResponse = await fetch('http://localhost:5000/api/dataperangkatalat', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (!devicesResponse.ok) {
+          throw new Error('Failed to fetch devices');
+        }
+
+        const devicesTextResponse = await devicesResponse.text();
+        console.log('Raw devices response:', devicesTextResponse);
+        const devicesData = JSON.parse(devicesTextResponse);
+        setDevices(devicesData);
+
+    
+        const userResponse = await fetch("http://localhost:5000/api/lihatdata", {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          if (userData) {
+            if (userData.user) {
+              setUserData(userData.user);
+            }
+            if (userData.features) {
+              setFeatures(userData.features);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
   }, []);
+
+  
+
 
   const handleFeatureChange = (featureId) => {
     setNewUser(prevUser => {
@@ -157,7 +184,12 @@ export default function HeaderLinks(props) {
     }
   };
 
+
+  
+  
   return (
+    <>
+    
     <Flex
       w={{ sm: '100%', md: 'auto' }}
       alignItems="center"
@@ -282,6 +314,7 @@ export default function HeaderLinks(props) {
             </FormControl>
 
             <FormControl>
+
             <Box>
   
       <FormLabel>Fitur yang Dipilih</FormLabel>
@@ -326,24 +359,44 @@ export default function HeaderLinks(props) {
 
             </FormControl>
 
-            <FormControl>
-              <FormLabel>Nama Perangkat GPS</FormLabel>
-              <Input
-                value={newUser.gps_device_name}
-                onChange={(e) => setNewUser({ ...newUser, gps_device_name: e.target.value })}
-                placeholder="Enter GPS device name"
-                variant="outline"
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Kode Perangkat GPS</FormLabel>
-              <Input
-                value={newUser.gps_device_code}
-                onChange={(e) => setNewUser({ ...newUser, gps_device_code: e.target.value })}
-                placeholder="Enter GPS device code"
-                variant="outline"
-              />
-            </FormControl>
+            {/* <Box p={5} borderWidth={1} borderRadius="lg" boxShadow="md" width="400px" margin="auto"> */}
+      {/* <Heading as="h2" size="lg" mb={4} textAlign="center">Manajemen Perangkat GPS</Heading> */}
+      {/* <Stack spacing={4}> */}
+        <FormControl>
+          <FormLabel>Perangkat GPS</FormLabel>
+          <Select
+            value={newUser.gps_device_name}
+            onChange={(e) => {
+              const selectedDevice = devices.find(device =>
+                `${device.gps_device_name} - ${device.gps_device_code}` === e.target.value
+              );
+              if (selectedDevice) {
+                setNewUser({
+                  ...newUser,
+                  gps_device_name: selectedDevice.gps_device_name,
+                  gps_device_code: selectedDevice.gps_device_code,
+                });
+              }
+            }}
+          >
+            <option value="" disabled>
+              Pilih Perangkat GPS
+            </option>
+            {devices.length > 0 ? (
+              devices.map((device) => (
+                <option key={device.idgps} value={`${device.gps_device_name} - ${device.gps_device_code}`}>
+                  {device.gps_device_name} - {device.gps_device_code}
+                </option>
+              ))
+            ) : (
+              <option disabled>Tidak ada perangkat yang tersedia</option>
+            )}
+          </Select>
+        </FormControl>
+
+      
+      {/* </Stack> */}
+    {/* </Box>  */}
             <FormControl>
               <FormLabel>Tanggal Pembelian</FormLabel>
               <Input
@@ -353,6 +406,21 @@ export default function HeaderLinks(props) {
                 variant="outline"
               />
             </FormControl>
+            {/* <FormControl>
+  <FormLabel>Masa Pembelian</FormLabel>
+  <Select
+    value={newUser.bulan_pembelian}
+    onChange={(e) => setNewUser({ ...newUser, bulan_pembelian: e.target.value })}
+    placeholder="Pilih Durasi Pembelian"
+    variant="outline"
+  >
+    <option value="1">1 Bulan</option>
+    <option value="3">3 Bulan</option>
+    <option value="6">6 Bulan</option>
+    <option value="12">12 Bulan</option>
+  </Select>
+</FormControl> */}
+
             <FormControl>
               <FormLabel>Alamat</FormLabel>
               <Input
@@ -375,6 +443,8 @@ export default function HeaderLinks(props) {
       </ModalContent>
     </Modal>
     </Flex>
+    </>
+
   );
 }
 

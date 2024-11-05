@@ -28,7 +28,7 @@ export default function Main() {
     setIsAuthenticated(false);
     localStorage.removeItem('isAuthenticated');
     console.log('User logged out');
-    navigate('/login');
+    navigate('/');
   };
 
   useEffect(() => {
