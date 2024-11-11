@@ -111,110 +111,100 @@ const UserDashboard = () => {
   };
 
   return (
-    <Box p={5} borderWidth={1} borderRadius="lg" boxShadow="lg" bg="white" maxW="1200px" mx="auto">
-      <Text textAlign="center" fontSize="2xl" fontWeight="bold" mb={5} color="teal.600">
-        Dashboard Pengguna
-      </Text>
+    <Box p={5} borderWidth={1} borderRadius="lg" boxShadow="xl" bg="white" maxW="1400px" mx="auto">
+  <Text textAlign="center" fontSize="2xl" fontWeight="bold" mb={5} color="teal.600">
+    Dashboard Pengguna
+  </Text>
 
-      <Input
-        placeholder="Cari berdasarkan username atau email"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        mb={4}
-        variant="filled"
-        bg="gray.100"
-        borderColor="teal.400"
-      />
-
-   
-      <Box overflowY="auto" maxHeight="400px">
-        <Table variant="striped" colorScheme="teal" size="md">
-          <Thead>
-            <Tr>
-              <Th>No</Th>
-              <Th>Username</Th>
-              <Th>Email</Th>
-              <Th>Nama Perusahaan</Th>
-              <Th>Nama Perangkat GPS</Th>
-              <Th>Kode Perangkat GPS</Th>
-              <Th>Tanggal Pembelian</Th>
-              {/* <Th>Tanggal Kedaluwarsa</Th> */}
-              <Th>Alamat</Th>
-              <Th>Aksi</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {isLoading ? (
-              <Tr>
-                <Td colSpan="10" textAlign="center">Loading...</Td>
-              </Tr>
-            ) : (
-              paginatedUsers.map((user, index) => (
-                <Tr key={user.id}>
-                  <Td>{(currentPage - 1) * PAGE_SIZE + index + 1}</Td>
-                  <Td>{user.username}</Td>
-                  <Td>{user.email}</Td>
-                  <Td>{user.company_name}</Td>
-                  <Td>{user.gps_device_name}</Td>
-                  <Td>{user.gps_device_code}</Td>
-                  <Td>{new Date(user.purchase_date).toLocaleDateString()}</Td>
-                  {/* <Td>{new Date(user.expiry_date).toLocaleDateString()}</Td> */}
-                  <Td>{user.address}</Td>
-                  <Td>
-
-  <IconButton
-    onClick={() => handleDisableUser(user.id, user.isActive)}  
-    colorScheme={user.isActive ? "yellow" : "red"} 
-    size="sm"
-    mr={2}
-    icon={user.isActive ? <LockIcon /> : <UnlockIcon />} 
-    aria-label={user.isActive ? 'Nonaktifkan Pengguna' : 'Aktifkan Pengguna'}
-    _hover={{
-      backgroundColor: user.isActive ? "yellow.200" : "red.200", 
-    }}
+  <Input
+    placeholder="Cari berdasarkan username atau email"
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    mb={4}
+    variant="filled"
+    bg="gray.100"
+    borderColor="teal.400"
+    _focus={{ borderColor: 'teal.500' }}
+    size="lg"
   />
-  
 
-  <Button
-    onClick={() => handleDeleteUser(user.id)} 
-    colorScheme="red" 
-    size="sm"
-    _hover={{
-      backgroundColor: "red.300",
-    }}
-  >
-    <DeleteIcon />
-  </Button>
-</Td>
+  <Box overflowX="auto" maxHeight="600px" borderRadius="lg" border="1px solid" borderColor="gray.200">
+    <Table variant="simple" colorScheme="teal" size="lg">
+      <Thead bg="teal.600">
+        <Tr>
+          <Th color="white" py={4}>No</Th>
+          <Th color="white" py={4}>Username</Th>
+          <Th color="white" py={4}>Email</Th>
+          <Th color="white" py={4}>Nama Perusahaan</Th>
+          <Th color="white" py={4}>Nama Perangkat GPS</Th>
+          <Th color="white" py={4}>Kode Perangkat GPS</Th>
+          <Th color="white" py={4}>Tanggal Pembelian</Th>
+          <Th color="white" py={4}>Alamat</Th>
+          <Th color="white" py={4}>Aksi</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        {isLoading ? (
+          <Tr>
+            <Td colSpan="10" textAlign="center" py={6}>Loading...</Td>
+          </Tr>
+        ) : (
+          paginatedUsers.map((user, index) => (
+            <Tr key={user.id} _hover={{ bg: 'teal.50' }}>
+              <Td py={4}>{(currentPage - 1) * PAGE_SIZE + index + 1}</Td>
+              <Td py={4}>{user.username}</Td>
+              <Td py={4}>{user.email}</Td>
+              <Td py={4}>{user.company_name}</Td>
+              <Td py={4}>{user.gps_device_name}</Td>
+              <Td py={4}>{user.gps_device_code}</Td>
+              <Td py={4}>{new Date(user.purchase_date).toLocaleDateString()}</Td>
+              <Td py={4}>{user.address}</Td>
+              <Td py={4}>
+                <HStack spacing={2}>
+                  <IconButton
+                    onClick={() => handleDisableUser(user.id, user.isActive)}
+                    colorScheme={user.isActive ? "yellow" : "red"}
+                    size="sm"
+                    icon={user.isActive ? <LockIcon /> : <UnlockIcon />}
+                    aria-label={user.isActive ? 'Nonaktifkan Pengguna' : 'Aktifkan Pengguna'}
+                  />
+                  <IconButton
+                    onClick={() => handleDeleteUser(user.id)}
+                    colorScheme="red"
+                    size="sm"
+                    icon={<DeleteIcon />}
+                    aria-label="Hapus Pengguna"
+                  />
+                </HStack>
+              </Td>
+            </Tr>
+          ))
+        )}
+      </Tbody>
+    </Table>
+  </Box>
 
-                </Tr>
-              ))
-            )}
-          </Tbody>
-        </Table>
-      </Box>
+  <HStack justifyContent="space-between" mt={4}>
+    <Button
+      leftIcon={<ChevronLeftIcon />}
+      onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+      disabled={currentPage === 1}
+    >
+      Sebelumnya
+    </Button>
+    <Text>
+      Halaman {currentPage} dari {totalPages}
+    </Text>
+    <Button
+      rightIcon={<ChevronRightIcon />}
+      onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+      disabled={currentPage === totalPages}
+    >
+      Berikutnya
+    </Button>
+  </HStack>
+</Box>
 
-
-      <HStack spacing={4} mt={4} justify="center">
-        <IconButton
-          icon={<ChevronLeftIcon />}
-          isDisabled={currentPage === 1}
-          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          aria-label="Halaman Sebelumnya"
-          variant="outline"
-          colorScheme="teal"
-        />
-        <Text fontWeight="bold">Halaman {currentPage} dari {totalPages}</Text>
-        <IconButton
-          icon={<ChevronRightIcon />}
-          isDisabled={currentPage === totalPages}
-          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-          aria-label="Halaman Berikutnya"
-          variant="outline"
-          colorScheme="teal"
-        />
-      </HStack>
-    </Box>
   );
 };
 

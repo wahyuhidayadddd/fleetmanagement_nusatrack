@@ -22,6 +22,7 @@ const DriverDashboard = () => {
     vehicleNumber: '',
     phone: '',
     status: 'active',
+    sim_url: ''
   });
   const [files, setFiles] = useState({ ktp: null, sim: null });
   const [editingId, setEditingId] = useState(null);
@@ -29,7 +30,7 @@ const DriverDashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDriverLocation, setSelectedDriverLocation] = useState(null);
   const [selectedDriverName, setSelectedDriverName] = useState('');
-  const [selectedDriverDetails, setSelectedDriverDetails] = useState(''); // Store selected driver's details
+  const [selectedDriverDetails, setSelectedDriverDetails] = useState(''); 
   const [selectedDriverIcon, setSelectedDriverIcon] = useState(null);
 
 
@@ -39,15 +40,21 @@ const DriverDashboard = () => {
   useEffect(() => {
     fetchDrivers();
   }, []);
-
   const fetchDrivers = async () => {
+    const token = localStorage.getItem('token');
     try {
-      const response = await axios.get('http://localhost:5000/api/drivers');
+      const response = await axios.get('http://localhost:5000/api/drivers', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
       setDrivers(response.data);
     } catch (error) {
       showToast('Error fetching drivers', error.message, 'error');
     }
   };
+  
 
   const showToast = (title, description, status) => {
     toast({
@@ -70,32 +77,41 @@ const DriverDashboard = () => {
   };
 
   const addOrUpdateDriver = async () => {
-    if (!formData.name) {
-      showToast('Input Error', 'Name is required.', 'warning');
-      return;
-    }
-
     const formDataToSend = new FormData();
     Object.keys(formData).forEach((key) => formDataToSend.append(key, formData[key]));
+  
     if (files.ktp) formDataToSend.append('ktp', files.ktp);
     if (files.sim) formDataToSend.append('sim', files.sim);
-
+  
+    const token = localStorage.getItem('token');
+    if (!token) {
+      showToast('Error', 'No valid token found. Please log in again.', 'error');
+      return;
+    }
+  
+    const headers = {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'multipart/form-data',
+    };
+  
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/api/drivers/${editingId}`, formDataToSend, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const response = await axios.put(`http://localhost:5000/api/drivers/${editingId}`, formDataToSend, { headers });
         showToast('Driver Updated', `${formData.name} has been updated!`, 'success');
       } else {
-        await axios.post('http://localhost:5000/api/drivers', formDataToSend);
+        const response = await axios.post('http://localhost:5000/api/drivers', formDataToSend, { headers });
         showToast('Driver Added', `${formData.name} has been added!`, 'success');
       }
+  
       fetchDrivers();
       clearForm();
     } catch (error) {
+      console.error(error);  
       showToast('Error', error.response?.data?.error || error.message, 'error');
     }
   };
+  
+  
 
   const clearForm = () => {
     setFormData({ name: '', vehicleNumber: '', phone: '', status: 'active' });
@@ -121,20 +137,40 @@ const DriverDashboard = () => {
       phone: driver.phone,
       status: driver.status,
       vehicleType: driver.vehicle_type,
+      ktp_url: driver.ktp_url, 
+      sim_url: driver.sim_url, 
     });
     setEditingId(driver.id);
+    
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',  
+    });
   };
+  
   
 
   const handleDelete = async (id) => {
+    const token = localStorage.getItem('token');
     try {
-      await axios.delete(`http://localhost:5000/api/drivers/${id}`);
+    
+      await axios.delete(`http://localhost:5000/api/drivers/${id}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`, 
+        },
+      });
+  
+     
       showToast('Driver Deleted', 'The driver has been deleted!', 'success');
+  
+   
       fetchDrivers();
     } catch (error) {
+    
       showToast('Error', error.response?.data?.error || error.message, 'error');
     }
   };
+  
   const getVehicleIcon = (vehicleType) => {
     switch (vehicleType) {
       case 'car':
@@ -148,12 +184,12 @@ const DriverDashboard = () => {
     }
   };
   const getVehicleTypeFromNumber = (vehicle_number) => {
-    // Example logic to determine vehicle type based on vehicle number or other logic
-    if (vehicle_number.startsWith('AB')) { // Example condition for a car
+   
+    if (vehicle_number.startsWith('AB')) { 
       return 'car';
-    } else if (vehicle_number.startsWith('M')) { // Example condition for a motorcycle
+    } else if (vehicle_number.startsWith('M')) {
       return 'motorcycle';
-    } else if (vehicle_number.startsWith('T')) { // Example condition for a truck
+    } else if (vehicle_number.startsWith('T')) {
       return 'truck';
     }
     return 'unknown'; 
@@ -328,10 +364,10 @@ const DriverDashboard = () => {
   />
   <Marker position={selectedDriverLocation} icon={truckIcon}>
     <Popup>
-      <h4>{selectedDriverName}</h4> {/* Menampilkan nama driver */}
-      <pre>{selectedDriverDetails}</pre> {/* Menampilkan detail driver */}
+      <h4>{selectedDriverName}</h4>
+      <pre>{selectedDriverDetails}</pre>
     </Popup>
-    <Tooltip>{selectedDriverName}</Tooltip> {/* Tooltip menampilkan nama driver */}
+    <Tooltip>{selectedDriverName}</Tooltip> 
   </Marker>
 </MapContainer>
 

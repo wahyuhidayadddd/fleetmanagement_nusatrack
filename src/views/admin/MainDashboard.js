@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Heading, Text, SimpleGrid, Card, CardBody, Stack, Button, Icon } from '@chakra-ui/react';
 import './styles.css'; 
+import { Link } from 'react-router-dom';
 
 
 const MainDashboard = () => {
@@ -48,19 +49,21 @@ const MainDashboard = () => {
   
       <Box mb={6}>
       
-        <SimpleGrid columns={[1, 2, 3]} spacing={4}>
-          {features.map(feature => (
-            <Card key={feature.id}>
-              <CardBody>
-                <Stack spacing={3} align="center">
-                  <Text fontWeight="bold">{feature.name}</Text>
-                  <img src={feature.icon} style={{ width: '100px', height: '100px' }} />
-                  <Button colorScheme="teal" variant="outline">Lihat Detail</Button>
-                </Stack>
-              </CardBody>
-            </Card>
-          ))}
-        </SimpleGrid>
+      <SimpleGrid columns={[1, 2, 3]} spacing={4}>
+  {features.map(feature => (
+    <Card key={feature.id}>
+      <CardBody>
+        <Stack spacing={3} align="center">
+          <Text fontWeight="bold">{feature.name}</Text>
+          <img src={feature.icon} style={{ width: '100px', height: '100px' }} />
+          <Link to={`/detail/${feature.features}`}>
+            <Button colorScheme="teal" variant="outline">Lihat Detail</Button>
+          </Link>
+        </Stack>
+      </CardBody>
+    </Card>
+  ))}
+</SimpleGrid>
       </Box>
 
   

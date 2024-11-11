@@ -94,24 +94,24 @@ export default function HeaderLinks(props) {
         setDevices(devicesData);
 
     
-        const userResponse = await fetch("http://localhost:5000/api/lihatdata", {
-          method: 'GET',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-          },
-        });
+        // const userResponse = await fetch("http://localhost:5000/api/lihatdata", {
+        //   method: 'GET',
+        //   headers: {
+        //     'Authorization': `Bearer ${token}`,
+        //   },
+        // });
 
-        if (userResponse.ok) {
-          const userData = await userResponse.json();
-          if (userData) {
-            if (userData.user) {
-              setUserData(userData.user);
-            }
-            if (userData.features) {
-              setFeatures(userData.features);
-            }
-          }
-        }
+        // if (userResponse.ok) {
+        //   const userData = await userResponse.json();
+        //   if (userData) {
+        //     if (userData.user) {
+        //       setUserData(userData.user);
+        //     }
+        //     if (userData.features) {
+        //       setFeatures(userData.features);
+        //     }
+        //   }
+        // }
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -120,7 +120,39 @@ export default function HeaderLinks(props) {
     fetchData();
   }, []);
 
+ 
+
+  const lihatDataUser = async () => {
+    const token = localStorage.getItem('token');
+    const response = await fetch("http://localhost:5000/api/lihatdata", {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json' 
+      },
+      
+    });
   
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+
+      if (data && data.user) {
+        console.log('ID Pengguna:', data.user.id);
+        setUserData(data.user); 
+        setFeatures(data.features);
+      } else {
+        console.log('Data tidak memiliki ID atau tidak terdefinisi:', data);
+      }
+    } else {
+      console.log('Gagal mengambil data pengguna');
+    }
+  };
+  
+  useEffect(() => {
+    lihatDataUser(); 
+  }, []); 
+
 
 
   const handleFeatureChange = (featureId) => {
@@ -359,9 +391,7 @@ export default function HeaderLinks(props) {
 
             </FormControl>
 
-            {/* <Box p={5} borderWidth={1} borderRadius="lg" boxShadow="md" width="400px" margin="auto"> */}
-      {/* <Heading as="h2" size="lg" mb={4} textAlign="center">Manajemen Perangkat GPS</Heading> */}
-      {/* <Stack spacing={4}> */}
+  
         <FormControl>
           <FormLabel>Perangkat GPS</FormLabel>
           <Select
@@ -395,8 +425,7 @@ export default function HeaderLinks(props) {
         </FormControl>
 
       
-      {/* </Stack> */}
-    {/* </Box>  */}
+
             <FormControl>
               <FormLabel>Tanggal Pembelian</FormLabel>
               <Input

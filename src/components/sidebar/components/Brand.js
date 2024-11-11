@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from "react";
 
-// Chakra imports
+
 import { Flex, Text, useColorModeValue } from "@chakra-ui/react";
 
-// Custom components
+
 import { HSeparator } from "components/separator/Separator";
 
 export function SidebarBrand() {
-  // Chakra color mode
+ 
   const logoColor = useColorModeValue("navy.700", "white");
   const [userData, setUserData] = useState(null);
 
-  // Function to fetch user data
+
   const fetchUserData = async () => {
     const token = localStorage.getItem("token"); 
     const response = await fetch("http://localhost:5000/api/lihatdata", {
@@ -30,7 +30,7 @@ export function SidebarBrand() {
     }
   };
 
-  // Fetch user data when component mounts
+
   useEffect(() => {
     fetchUserData();
   }, []);
@@ -39,7 +39,7 @@ export function SidebarBrand() {
     <Flex align="center" direction="column">
       <Flex align="center" direction="row">
         <Text
-          fontSize="2xl" 
+          fontSize="16px" 
           fontWeight="bold" 
           letterSpacing="wider"
           color={logoColor} 

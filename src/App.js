@@ -51,7 +51,6 @@ export default function Main() {
             )
           }
         />
-
         <Route
           path="/rtl/*"
           element={<RTLLayout theme={currentTheme} setTheme={setCurrentTheme} />}
@@ -60,5 +59,7 @@ export default function Main() {
         <Route path="/" element={<Login onLogin={handleLogin} />} />
       </Routes>
     </ChakraProvider>
+
+    
   );
 }
