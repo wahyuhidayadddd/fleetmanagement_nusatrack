@@ -16,6 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { ChevronLeftIcon, ChevronRightIcon, LockIcon, UnlockIcon, DeleteIcon } from '@chakra-ui/icons';
 import axios from 'axios';
+import { InfoIcon } from '@chakra-ui/icons';
 
 const PAGE_SIZE = 10;
 
@@ -52,7 +53,9 @@ const UserDashboard = () => {
 
     loadUsers();
   }, []);
-
+  const handleDetailClick = (id) => {
+      console.log('Detail clicked for id:', id);
+  };
   const showToast = (title, description, status) => {
     toast({
       title,
@@ -111,8 +114,10 @@ const UserDashboard = () => {
   };
 
   return (
-    <Box p={5} borderWidth={1} borderRadius="lg" boxShadow="xl" bg="white" maxW="1400px" mx="auto">
-  <Text textAlign="center" fontSize="2xl" fontWeight="bold" mb={5} color="teal.600">
+ <>
+ 
+ <Box p={5} borderWidth={1} borderRadius="lg" boxShadow="xl" bg="white" maxW="1600px" mx="auto">
+  <Text textAlign="center" fontSize="2xl" fontWeight="bold" mb={7} color="teal.600">
     Dashboard Pengguna
   </Text>
 
@@ -175,6 +180,13 @@ const UserDashboard = () => {
                     icon={<DeleteIcon />}
                     aria-label="Hapus Pengguna"
                   />
+                  <IconButton
+                      onClick={() => handleDetailClick(user)}
+                      colorScheme="blue"
+                      size="sm"
+                      icon={<InfoIcon />}
+                      aria-label="Lihat Detail Pengguna"
+                    />
                 </HStack>
               </Td>
             </Tr>
@@ -204,6 +216,7 @@ const UserDashboard = () => {
     </Button>
   </HStack>
 </Box>
+ </>
 
   );
 };

@@ -32,13 +32,18 @@ const DriverDashboard = () => {
   const [selectedDriverName, setSelectedDriverName] = useState('');
   const [selectedDriverDetails, setSelectedDriverDetails] = useState(''); 
   const [selectedDriverIcon, setSelectedDriverIcon] = useState(null);
-
+  const [userRole, setUserRole] = useState('');
 
   
   const toast = useToast();
 
   useEffect(() => {
-    fetchDrivers();
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken = token.split('.')[1]; // Ambil bagian payload dari JWT
+      const decodedData = JSON.parse(atob(decodedToken)); // Decode base64 menjadi objek
+      setUserRole(decodedData.role); // Set role pengguna
+    }
   }, []);
   const fetchDrivers = async () => {
     const token = localStorage.getItem('token');
@@ -234,45 +239,70 @@ const DriverDashboard = () => {
   return (
     <Box p={5} borderWidth={1} borderRadius="lg" boxShadow="lg">
       <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Dashboard Driver</h2>
-      <VStack spacing={4} mb={4}>
-        <Input placeholder="Nama Driver" name="name" value={formData.name} onChange={handleInputChange} />
-        <Input placeholder="Nomor Kendaraan" name="vehicleNumber" value={formData.vehicleNumber} onChange={handleInputChange} />
-        <Input placeholder="Nomor Telepon" name="phone" value={formData.phone} onChange={handleInputChange} />
-        <Select placeholder="Status" name="status" value={formData.status} onChange={handleInputChange}>
-          <option value="active">Aktif</option>
-          <option value="inactive">Non-Aktif</option>
-        </Select>
-        <Select placeholder="Pilih Armada" name="vehicleType" value={formData.vehicleType} onChange={handleInputChange}>
-  <option value="truck">Truck</option>
-  <option value="mobil">Mobil</option>
-  <option value="motor">Motor</option>
-</Select>
-
-
-        <Box width="100%">
-          <FormLabel htmlFor="vehicleDataFile">Upload KTP (ID Card)</FormLabel>
-          <Input 
-            id="vehicleDataFile" 
-            type="file" 
-            onChange={(e) => handleFileChange(e, 'ktp')} 
-            accept=".jpg,.jpeg,.png,.pdf"
+      {userRole === 'admin' && (
+        <VStack spacing={4} mb={4}>
+          <Input
+            placeholder="Nama Driver"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
           />
-        </Box>
-
-        <Box width="100%">
-          <FormLabel htmlFor="simFile">Upload SIM (Driving License)</FormLabel>
-          <Input 
-            id="simFile" 
-            type="file" 
-            onChange={(e) => handleFileChange(e, 'sim')} 
-            accept=".jpg,.jpeg,.png,.pdf"
+          <Input
+            placeholder="Nomor Kendaraan"
+            name="vehicleNumber"
+            value={formData.vehicleNumber}
+            onChange={handleInputChange}
           />
-        </Box>
-        <Button onClick={addOrUpdateDriver} colorScheme="blue" width="full">
-          {editingId ? 'Update Driver' : 'Tambah Driver'}
-        </Button>
-      </VStack>
+          <Input
+            placeholder="Nomor Telepon"
+            name="phone"
+            value={formData.phone}
+            onChange={handleInputChange}
+          />
+          <Select
+            placeholder="Status"
+            name="status"
+            value={formData.status}
+            onChange={handleInputChange}
+          >
+            <option value="active">Aktif</option>
+            <option value="inactive">Non-Aktif</option>
+          </Select>
+          <Select
+            placeholder="Pilih Armada"
+            name="vehicleType"
+            value={formData.vehicleType}
+            onChange={handleInputChange}
+          >
+            <option value="truck">Truck</option>
+            <option value="mobil">Mobil</option>
+            <option value="motor">Motor</option>
+          </Select>
 
+          <Box width="100%">
+            <FormLabel htmlFor="vehicleDataFile">Upload KTP (ID Card)</FormLabel>
+            <Input
+              id="vehicleDataFile"
+              type="file"
+              onChange={(e) => handleFileChange(e, 'ktp')}
+              accept=".jpg,.jpeg,.png,.pdf"
+            />
+          </Box>
+
+          <Box width="100%">
+            <FormLabel htmlFor="simFile">Upload SIM (Driving License)</FormLabel>
+            <Input
+              id="simFile"
+              type="file"
+              onChange={(e) => handleFileChange(e, 'sim')}
+              accept=".jpg,.jpeg,.png,.pdf"
+            />
+          </Box>
+          <Button onClick={addOrUpdateDriver} colorScheme="blue" width="full">
+            {editingId ? 'Update Driver' : 'Tambah Driver'}
+          </Button>
+        </VStack>
+      )}
       <Table size="md" mt={5}>
         <Thead>
           <Tr>
