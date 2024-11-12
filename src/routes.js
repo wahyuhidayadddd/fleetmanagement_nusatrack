@@ -43,7 +43,7 @@ export const allRoutes = [
   //   feature: 'damage_detection',
   // },
   {
-    name: 'Driver',
+    name: 'Pendaftaran Drivers',
     layout: '/admin',
     path: '/driver-dashboard',
     icon: <Icon as={MdPeople} width="20px" height="20px" color="inherit" />,
