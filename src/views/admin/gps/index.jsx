@@ -152,7 +152,7 @@ const GPSTrackingComponent = () => {
     for (let i = 0; i < history.length - 1; i++) {
       const from = L.latLng(history[i][0], history[i][1]);
       const to = L.latLng(history[i + 1][0], history[i + 1][1]);
-      totalDistance += from.distanceTo(to) / 1000; // convert to km
+      totalDistance += from.distanceTo(to) / 1000; 
     }
     return totalDistance.toFixed(2);
   };
@@ -183,11 +183,11 @@ const GPSTrackingComponent = () => {
   }, [currentHistoryIndex, vehicleHistory]);
 
   const handleEngineToggle = () => {
-    setIsEngineOn((prev) => !prev); // Toggle engine status
+    setIsEngineOn((prev) => !prev); 
   };
 
   const handleAlarmToggle = () => {
-    setAlarm((prev) => !prev); // Toggle alarm status
+    setAlarm((prev) => !prev);
   };
 
   return (
@@ -196,7 +196,7 @@ const GPSTrackingComponent = () => {
         Pelacakan GPS dengan Sensor
       </Heading>
 
-      {/* Filter & Search */}
+ 
       <SimpleGrid columns={[1, 2]} spacing={4} mb={4}>
         <Select
           placeholder="Pilih Jenis Kendaraan"
@@ -215,8 +215,7 @@ const GPSTrackingComponent = () => {
         />
       </SimpleGrid>
 
-      {/* Statistik Kendaraan */}
-      <SimpleGrid columns={[3]} spacing={4} mb={4}>
+          <SimpleGrid columns={[3]} spacing={4} mb={4}>
         <Card>
           <Stack align="center" padding={4}>
             <Text fontSize="2xl" color="blue.500">🚗</Text>
@@ -237,7 +236,7 @@ const GPSTrackingComponent = () => {
         </Card>
       </SimpleGrid>
 
-      {/* Tampilkan Peta */}
+    
       <MapContainer center={[-6.1751, 106.8650]} zoom={13} style={{ height: '500px', width: '100%' }}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -274,20 +273,20 @@ const GPSTrackingComponent = () => {
         )}
       </MapContainer>
 
-      {/* Playback Controls */}
+      
       <Box mt={4}>
         <Button onClick={startPlayback} colorScheme="blue" mr={2}>Play</Button>
         <Button onClick={stopPlayback} colorScheme="red">Stop</Button>
       </Box>
 
-      {/* Alarm Notification */}
+
       {alarm && (
         <Box mt={4} color="red.500">
           🚨 Alarm: Kendaraan telah berhenti!
         </Box>
       )}
 
-      {/* Drawer for vehicle details */}
+    
       <Drawer isOpen={isOpen} placement="right" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
@@ -300,7 +299,7 @@ const GPSTrackingComponent = () => {
             <Text>Telepon Driver: {selectedVehicle?.driver.phone}</Text>
             <Text>Total Jarak: {totalDistance} km</Text>
 
-            {/* Engine and Alarm Controls */}
+          1
             <Button
               onClick={handleEngineToggle}
               colorScheme={isEngineOn ? 'green' : 'red'}

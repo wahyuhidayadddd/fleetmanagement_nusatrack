@@ -33,16 +33,16 @@ const DriverDashboard = () => {
   const [selectedDriverDetails, setSelectedDriverDetails] = useState(''); 
   const [selectedDriverIcon, setSelectedDriverIcon] = useState(null);
   const [userRole, setUserRole] = useState('');
-
+  const [users, setUsers] = useState([]);
   
   const toast = useToast();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      const decodedToken = token.split('.')[1]; // Ambil bagian payload dari JWT
-      const decodedData = JSON.parse(atob(decodedToken)); // Decode base64 menjadi objek
-      setUserRole(decodedData.role); // Set role pengguna
+      const decodedToken = token.split('.')[1]; 
+      const decodedData = JSON.parse(atob(decodedToken)); 
+      setUserRole(decodedData.role);
     }
   }, []);
   const fetchDrivers = async () => {
@@ -61,6 +61,26 @@ const DriverDashboard = () => {
   };
   
 
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      const token = localStorage.getItem('token'); 
+      try {
+        const response = await axios.get("http://localhost:5000/api/users", {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Gagal mengambil data pengguna:", error);
+      }
+    };
+  
+    fetchUsers();
+  }, []); 
+  
   const showToast = (title, description, status) => {
     toast({
       title,
@@ -240,70 +260,92 @@ const DriverDashboard = () => {
     <Box p={5} borderWidth={1} borderRadius="lg" boxShadow="lg">
       <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Dashboard Driver</h2>
       {userRole === 'admin' && (
-        <VStack spacing={4} mb={4}>
-          <Input
-            placeholder="Nama Driver"
-            name="name"
-            value={formData.name}
-            onChange={handleInputChange}
-          />
-          <Input
-            placeholder="Nomor Kendaraan"
-            name="vehicleNumber"
-            value={formData.vehicleNumber}
-            onChange={handleInputChange}
-          />
-          <Input
-            placeholder="Nomor Telepon"
-            name="phone"
-            value={formData.phone}
-            onChange={handleInputChange}
-          />
-          <Select
-            placeholder="Status"
-            name="status"
-            value={formData.status}
-            onChange={handleInputChange}
-          >
-            <option value="active">Aktif</option>
-            <option value="inactive">Non-Aktif</option>
-          </Select>
-          <Select
-            placeholder="Pilih Armada"
-            name="vehicleType"
-            value={formData.vehicleType}
-            onChange={handleInputChange}
-          >
-            <option value="truck">Truck</option>
-            <option value="mobil">Mobil</option>
-            <option value="motor">Motor</option>
-          </Select>
-
-          <Box width="100%">
-            <FormLabel htmlFor="vehicleDataFile">Upload KTP (ID Card)</FormLabel>
-            <Input
-              id="vehicleDataFile"
-              type="file"
-              onChange={(e) => handleFileChange(e, 'ktp')}
-              accept=".jpg,.jpeg,.png,.pdf"
-            />
-          </Box>
-
-          <Box width="100%">
-            <FormLabel htmlFor="simFile">Upload SIM (Driving License)</FormLabel>
-            <Input
-              id="simFile"
-              type="file"
-              onChange={(e) => handleFileChange(e, 'sim')}
-              accept=".jpg,.jpeg,.png,.pdf"
-            />
-          </Box>
-          <Button onClick={addOrUpdateDriver} colorScheme="blue" width="full">
-            {editingId ? 'Update Driver' : 'Tambah Driver'}
-          </Button>
-        </VStack>
-      )}
-      <Table size="md" mt={5}>
+  <VStack spacing={4} mb={4}>
+    <Select
+      placeholder="Pilih Pengguna"
+      name="userId"
+      value={formData.userId}
+      onChange={handleInputChange}
+    >
+      {users.map((user) => (
+        <option value={user.id} key={user.id}>
+          {user.username} - {user.email} ({user.company_name})
+        </option>
+      ))}
+    </Select>
+    <Input
+      placeholder="Nama Driver"
+      name="name"
+      value={formData.name}
+      onChange={handleInputChange}
+    />
+    <Input
+      placeholder="Nomor Kendaraan"
+      name="vehicleNumber"
+      value={formData.vehicleNumber}
+      onChange={handleInputChange}
+    />
+    <Input
+      placeholder="Nomor Telepon"
+      name="phone"
+      value={formData.phone}
+      onChange={handleInputChange}
+    />
+    <Input
+      placeholder="Nama Alat GPS"
+      name="gpsDeviceName"
+      value={formData.gpsDeviceName}
+      onChange={handleInputChange}
+    />
+    <Input
+      placeholder="Kode Alat GPS"
+      name="gpsDeviceCode"
+      value={formData.gpsDeviceCode}
+      onChange={handleInputChange}
+    />
+    <Select
+      placeholder="Status"
+      name="status"
+      value={formData.status}
+      onChange={handleInputChange}
+    >
+      <option value="active">Aktif</option>
+      <option value="inactive">Non-Aktif</option>
+    </Select>
+    <Select
+      placeholder="Pilih Armada"
+      name="vehicleType"
+      value={formData.vehicleType}
+      onChange={handleInputChange}
+    >
+      <option value="truck">Truck</option>
+      <option value="mobil">Mobil</option>
+      <option value="motor">Motor</option>
+    </Select>
+    <Box width="100%">
+      <FormLabel htmlFor="vehicleDataFile">Upload KTP (ID Card)</FormLabel>
+      <Input
+        id="vehicleDataFile"
+        type="file"
+        onChange={(e) => handleFileChange(e, 'ktp')}
+        accept=".jpg,.jpeg,.png,.pdf"
+      />
+    </Box>
+    <Box width="100%">
+      <FormLabel htmlFor="simFile">Upload SIM (Driving License)</FormLabel>
+      <Input
+        id="simFile"
+        type="file"
+        onChange={(e) => handleFileChange(e, 'sim')}
+        accept=".jpg,.jpeg,.png,.pdf"
+      />
+    </Box>
+    <Button onClick={addOrUpdateDriver} colorScheme="blue" width="full">
+      {editingId ? 'Update Driver' : 'Tambah Driver'}
+    </Button>
+  </VStack>
+)}
+  <Table size="md" mt={5}>
         <Thead>
           <Tr>
             <Th>No</Th>

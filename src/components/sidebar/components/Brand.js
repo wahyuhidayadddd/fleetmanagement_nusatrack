@@ -45,7 +45,7 @@ export function SidebarBrand() {
           color={logoColor} 
           fontFamily="Poppins, sans-serif" 
         >
-          {userData ? ` ${userData.company_name}` : "Loading..."}
+          {userData ? ` ${userData.nama_perusahaan}` : "Loading..."}
         </Text>
       </Flex>
       <HSeparator mb="20px" />

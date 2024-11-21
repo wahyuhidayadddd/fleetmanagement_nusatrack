@@ -197,8 +197,8 @@ export default function HeaderLinks(props) {
         company_name: '', 
       
         selected_features: [],
-        gps_device_name: '', 
-        gps_device_code: '', 
+  
+     
         purchase_date: '', 
         address: '' 
       });
@@ -392,7 +392,7 @@ export default function HeaderLinks(props) {
             </FormControl>
 
   
-        <FormControl>
+        {/* <FormControl>
           <FormLabel>Perangkat GPS</FormLabel>
           <Select
             value={newUser.gps_device_name}
@@ -422,7 +422,7 @@ export default function HeaderLinks(props) {
               <option disabled>Tidak ada perangkat yang tersedia</option>
             )}
           </Select>
-        </FormControl>
+        </FormControl> */}
 
       
 

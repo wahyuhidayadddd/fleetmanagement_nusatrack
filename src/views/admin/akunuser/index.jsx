@@ -37,22 +37,25 @@ const UserDashboard = () => {
         showToast('Error', 'Anda tidak memiliki akses. Silakan login kembali.', 'error');
         return;
       }
-      
+  
       try {
         setIsLoading(true);
         const response = await axios.get('http://localhost:5000/api/admin/users', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setUsers(response.data);
+        console.log('Users data:', response.data);
+        setUsers(response.data); 
       } catch (error) {
+        console.error('Error fetching users:', error);
         showToast('Error fetching users', error.response?.data?.error || error.message, 'error');
       } finally {
-        setIsLoading(false); 
+        setIsLoading(false);
       }
     };
-
+  
     loadUsers();
   }, []);
+  
   const handleDetailClick = (id) => {
       console.log('Detail clicked for id:', id);
   };
@@ -141,10 +144,10 @@ const UserDashboard = () => {
           <Th color="white" py={4}>Username</Th>
           <Th color="white" py={4}>Email</Th>
           <Th color="white" py={4}>Nama Perusahaan</Th>
-          <Th color="white" py={4}>Nama Perangkat GPS</Th>
-          <Th color="white" py={4}>Kode Perangkat GPS</Th>
+          {/* <Th color="white" py={4}>Nama Perangkat GPS</Th>
+          <Th color="white" py={4}>Kode Perangkat GPS</Th> */}
           <Th color="white" py={4}>Tanggal Pembelian</Th>
-          <Th color="white" py={4}>Alamat</Th>
+          {/* <Th color="white" py={4}>Alamat</Th> */}
           <Th color="white" py={4}>Aksi</Th>
         </Tr>
       </Thead>
@@ -155,16 +158,16 @@ const UserDashboard = () => {
           </Tr>
         ) : (
           paginatedUsers.map((user, index) => (
-            <Tr key={user.id} _hover={{ bg: 'teal.50' }}>
-              <Td py={4}>{(currentPage - 1) * PAGE_SIZE + index + 1}</Td>
-              <Td py={4}>{user.username}</Td>
-              <Td py={4}>{user.email}</Td>
-              <Td py={4}>{user.company_name}</Td>
-              <Td py={4}>{user.gps_device_name}</Td>
-              <Td py={4}>{user.gps_device_code}</Td>
-              <Td py={4}>{new Date(user.purchase_date).toLocaleDateString()}</Td>
-              <Td py={4}>{user.address}</Td>
-              <Td py={4}>
+            <Tr key={user.id} _hover={{ bg: 'teal.100' }}>
+              <Td style={{color:'black'}} py={4}>{(currentPage - 1) * PAGE_SIZE + index + 1}</Td>
+              <Td style={{color:'black'}} py={4}>{user.username}</Td>
+              <Td style={{color:'black'}} py={4}>{user.email}</Td>
+              <Td  style={{color:'black'}} py={4}>{user.nama_perusahaan}</Td>
+              {/* <Td style={{color:'black'}} py={4}>{user.gps_device_name}</Td>
+              <Td style={{color:'black'}} py={4}>{user.gps_device_code}</Td> */}
+              <Td style={{color:'black'}} py={4}>{new Date(user.tanggal_pembelian).toLocaleDateString()}</Td>
+              {/* <Td style={{color:'black'}} py={4}>{user.address}</Td> */}
+              <Td style={{color:'black'}} py={4}>
                 <HStack spacing={2}>
                   <IconButton
                     onClick={() => handleDisableUser(user.id, user.isActive)}

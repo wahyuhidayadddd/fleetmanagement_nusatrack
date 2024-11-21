@@ -1,6 +1,6 @@
 import React from 'react';
-import { Icon } from '@chakra-ui/react';
-import { MdMyLocation, MdPhotoCamera, MdWarning, MdPeople, MdDashboard, MdAccountBox } from 'react-icons/md';
+import { Badge, Box, Icon } from '@chakra-ui/react';
+import { MdMyLocation, MdPhotoCamera, MdWarning, MdPeople, MdDashboard, MdAccountBox, MdMap, MdVideocam } from 'react-icons/md';
 import GPSTrackingComponent from 'views/admin/gps';
 import CameraTrackingComponent from 'views/admin/camera';
 import DamageDetectionComponent from 'views/admin/damage';
@@ -19,29 +19,48 @@ export const allRoutes = [
     feature: 'dashboard', 
   },
   {
-    name: 'Pelacakan GPS',
+    name: ' Map ',
     layout: '/admin',
     path: '/gps-tracking',
-    icon: <Icon as={MdMyLocation} width="20px" height="20px" color="inherit" />,
+    icon: <Icon as={MdMap} width="20px" height="20px" color="inherit" />,
     component: <GPSTrackingComponent />,
     feature: 'gps_tracking',
   },
   {
-    name: 'Kamera Lacak',
+    name: 'Camera',
     layout: '/admin',
     path: '/camera-tracking',
-    icon: <Icon as={MdPhotoCamera} width="20px" height="20px" color="inherit" />,
+    icon: (
+      <Box position="relative" display="inline-block">
+        {/* Ikon Kamera */}
+        <Icon as={MdVideocam} width="20px" height="20px" color="inherit" />
+  
+        {/* Label Beta di atas ikon */}
+        <Badge 
+          position="absolute" 
+          top="-19px" 
+          right="-14px" 
+     
+          colorScheme="yellow" 
+          fontSize="0.6em"
+        >
+          Beta
+        </Badge>
+      </Box>
+    ),
     component: <CameraTrackingComponent />,
     feature: 'camera_tracking',
   },
-  // {
-  //   name: 'Deteksi Kerusakan',
-  //   layout: '/admin',
-  //   path: '/damage-detection',
-  //   icon: <Icon as={MdWarning} width="20px" height="20px" color="inherit" />,
-  //   component: <DamageDetectionComponent />,
-  //   feature: 'damage_detection',
-  // },
+  
+  
+  {
+    name: 'Cut Engine (Matikan Mesin)',
+    layout: '/admin',
+    path: '/damage-detection',
+    icon: <Icon as={MdWarning} width="20px" height="20px" color="inherit" />,
+    component: <DamageDetectionComponent />,
+    feature: 'damage_detection',
+  },
   {
     name: 'Pendaftaran Drivers',
     layout: '/admin',
@@ -52,6 +71,14 @@ export const allRoutes = [
   },
   {
     name: 'Akun Costumer',
+    layout: '/admin',
+    path: '/akunuser',
+    icon: <Icon as={MdAccountBox} width="20px" height="20px" color="inherit" />,
+    component: <AkunUser />,
+    feature: 'akun_user',
+  },
+  {
+    name: 'Laporan',
     layout: '/admin',
     path: '/akunuser',
     icon: <Icon as={MdAccountBox} width="20px" height="20px" color="inherit" />,
